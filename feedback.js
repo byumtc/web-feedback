@@ -44,8 +44,8 @@ var feedback = function() {
 		var videoElem = document.createElement('video');
 		videoElem.autoplay = true;
 		var videoCoverElem = document.createElement('div');
-		videoCoverElem.id = 'video-cover';
-		videoElem.id = 'video';
+		videoCoverElem.classList.add('feedback--video-cover');
+		videoElem.classList.add('feedback--video');
 		document.body.appendChild(modalElem);
 		document.body.appendChild(videoCoverElem);
 		document.body.appendChild(videoElem);
