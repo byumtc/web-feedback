@@ -1,0 +1,19 @@
+{
+  "name": "web-feedback",
+  "version": "1.0.0",
+  "description": "",
+  "main": "feedback.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kimbo/web-feedback.git"
+  },
+  "author": "Kimball Leavitt",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/kimbo/web-feedback/issues"
+  },
+  "homepage": "https://github.com/kimbo/web-feedback#readme"
+}
