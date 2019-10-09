@@ -40,6 +40,10 @@ var feedback = function() {
 		</div>`;
 
 	function screenshot(options, callback) {
+
+		/* use html template for the modal if they provided one */
+		modalTemplate = options.template || modalTemplate;
+
 		/* create the video element, video cover, and modal elements and add them to body */
 		var modalElem = document.createElement('div');
 		modalElem.classList.add('feedback--modal');
@@ -131,8 +135,7 @@ var feedback = function() {
 
 	return {
 		screenshot: screenshot,
-		defaultCallback: feedbackPopup,
-		modalTemplate: modalTemplate 
+		defaultCallback: feedbackPopup
 	}
 }();
 
