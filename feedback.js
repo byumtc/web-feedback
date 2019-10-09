@@ -13,34 +13,39 @@ var feedback = function() {
 		}
 	}
 
-	function screenshot(options, callback) {
-
-		/* create the video element and video cover elements and add them to body */
-		var modalElem = document.createElement('div');
-		modalElem.classList.add('feedback--modal');
-		modalElem.id = 'feedback--modal';
-		var modalHtml = `
-			<!-- Modal content -->
-			<div class="feedback--modal-content">
+	var modalTemplate = `
+		<!-- Modal content -->
+		<div class="feedback--modal-content">
+			<form>
 				<span class="feedback--close" id="feedback--close">&times;</span>
 				<p>Tell us what we can help you with</p>
 				<p>
 					<label>
 						Email:
-						<input type="email" width="100%" placeholder="email@example.com">
+						<input name="email" type="email" width="100%" placeholder="email@example.com">
 					</label>
 				</p>
 				<p>
 					<label>
 						Describe your problem:
-						<textarea width="100%"></textarea>
+						<textarea width="100%" name="feedback-text"></textarea>
 					</label>
 				</p>
 
 				<p>Screenshot:</p>
 				<img id="feedback--screenshot" class="feedback--screenshot">
-			</div>`;
-		appendHtml(modalElem, modalHtml);
+
+				<p><button type="submit" class="feedback--btn">Submit</button></p>
+			</form>
+		</div>`;
+
+	function screenshot(options, callback) {
+		/* create the video element, video cover, and modal elements and add them to body */
+		var modalElem = document.createElement('div');
+		modalElem.classList.add('feedback--modal');
+		modalElem.id = 'feedback--modal';
+		modalElem.style.display = "none";
+		appendHtml(modalElem, modalTemplate);
 		var videoElem = document.createElement('video');
 		videoElem.autoplay = true;
 		var videoCoverElem = document.createElement('div');
@@ -50,11 +55,12 @@ var feedback = function() {
 		document.body.appendChild(videoCoverElem);
 		document.body.appendChild(videoElem);
 
+		/* close modal when they click the 'X' */
 		document.getElementById('feedback--close').addEventListener("click", function(e) {
 			modalElem.style.display = "none";
 		});
 
-		// When the user clicks anywhere outside of the modal, close it
+		/* When the user clicks anywhere outside of the modal, close it */
 		window.onclick = function(event) {
 			if (event.target == modalElem) {
 				modalElem.style.display = "none";
@@ -125,7 +131,8 @@ var feedback = function() {
 
 	return {
 		screenshot: screenshot,
-		defaultCallback: feedbackPopup
+		defaultCallback: feedbackPopup,
+		modalTemplate: modalTemplate 
 	}
 }();
 

@@ -16,11 +16,9 @@ document.addEventListener('DOMContentLoaded', function() {
 			type: 'image/png'
 		};
 		// take a screenshot
-		feedback.screenshot(options, function(url) {
-			// do something with the screenshot
-			// feedback.defaultCallback will open up a modal
-			// with some fields to fill out
-			feedback.defaultCallback(url);
-		});
+		// do something with it
+		// feedback.defaultCallback will open up a modal
+		// with some fields to fill out
+		feedback.screenshot(options, feedback.defaultCallback);
 	}, false);
 });
