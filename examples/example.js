@@ -6,7 +6,9 @@
 // Then it shows a modal with some fields to fill out
 //
 document.addEventListener('DOMContentLoaded', function() {
-	var feedbackOptions = new feedback.FeedbackOptions('http://localhost:1234');
+	var feedbackOptions = new feedback.FeedbackOptions({
+		endpoint: 'http://localhost:1234'
+	});
 	document.getElementById("do-feedback").addEventListener("click", function(evt) {
 		feedback.doFeedback(feedbackOptions);
 	}, false);

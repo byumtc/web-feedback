@@ -2,20 +2,20 @@
 
 var feedback = function() {
 	class FeedbackOptions {
-		constructor(endpoint, modalTemplate, screenshotOptions, additionalInfo, callback) {
-			this.endpoint = endpoint;
-			this.modalTemplate = modalTemplate;
-			this.screenshotOptions = screenshotOptions;
-			this.additionalInfo = additionalInfo || {};
-			this.callback = callback;
+		constructor(options, callback) {
+			this.endpoint = options.endpoint;
+			this.modalTemplate = options.modalTemplate;
+			this.screenshotOptions = options.screenshotOptions;
+			this.additionalInfo = options.additionalInfo || {};
+			this.callback = callback || options.callback;
 		}
 	}
 
 	class ScreenshotOptions {
-		constructor(width, height, type) {
-			this.width = width;
-			this.height = height;
-			this.type = type;
+		constructor(options) {
+			this.width = options.width;
+			this.height = options.height;
+			this.type = options.type;
 		}
 	}
 
