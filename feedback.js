@@ -2,11 +2,11 @@
 
 var feedback = function() {
 	class FeedbackOptions {
-		constructor(endpoint, modalTemplate, screenshotOptions, additionalData, callback) {
+		constructor(endpoint, modalTemplate, screenshotOptions, additionalInfo, callback) {
 			this.endpoint = endpoint;
 			this.modalTemplate = modalTemplate;
 			this.screenshotOptions = screenshotOptions;
-			this.additionalData = additionalData || {};
+			this.additionalInfo = additionalInfo || {};
 			this.callback = callback;
 		}
 	}
@@ -47,7 +47,7 @@ var feedback = function() {
 		elems.forEach(function(element) { 
 			formData[element.name] = element.value;
 		});
-		Object.assign(formData, feedbackOptions.additionalData);
+		Object.assign(formData, feedbackOptions.additionalInfo);
 
 		if (typeof feedbackOptions.callback === 'function') {
 			callback(formData);
