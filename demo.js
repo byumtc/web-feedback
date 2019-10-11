@@ -6,19 +6,10 @@
 // Then it shows a modal with some fields to fill out
 //
 document.addEventListener('DOMContentLoaded', function() {
+	var feedbackOptions = new feedback.FeedbackOptions({
+		endpoint: 'http://0.0.0.0:1234'
+	});
 	document.getElementById("start").addEventListener("click", function(evt) {
-		var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-		var height = window.innerHeight|| document.documentElement.clientHeight || document.body.clientHeight;
-		// options for the size and type of our screenshot
-		var options = {
-			width,
-			height,
-			type: 'image/png'
-		};
-		// take a screenshot
-		// do something with it
-		// feedback.defaultCallback will open up a modal
-		// with some fields to fill out
-		feedback.screenshot(options, feedback.defaultCallback);
+		feedback.doFeedback(feedbackOptions);
 	}, false);
 });

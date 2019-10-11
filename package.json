@@ -15,5 +15,6 @@
   "bugs": {
     "url": "https://github.com/kimbo/web-feedback/issues"
   },
-  "homepage": "https://github.com/kimbo/web-feedback#readme"
+  "homepage": "https://github.com/kimbo/web-feedback#readme",
+  "dependencies": {}
 }

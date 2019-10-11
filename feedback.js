@@ -1,9 +1,73 @@
 'use strict';
 
 var feedback = function() {
-	/* not using this right now, was using it to retry the screenshot */
-	function sleep(ms) {
-		return new Promise(resolve => setTimeout(resolve, ms));
+	class FeedbackOptions {
+		constructor(endpoint, modalTemplate, screenshotOptions, additionalData, callback) {
+			this.endpoint = endpoint;
+			this.modalTemplate = modalTemplate;
+			this.screenshotOptions = screenshotOptions;
+			this.additionalData = additionalData || {};
+			this.callback = callback;
+		}
+	}
+
+	class ScreenshotOptions {
+		constructor(width, height, type) {
+			this.width = width;
+			this.height = height;
+			this.type = type;
+		}
+	}
+
+	function doFeedback(feedbackOptions) {
+		if (!feedbackOptions) {
+			feedbackOptions = {};
+		}
+		if (!feedbackOptions.callback && !feedbackOptions.endpoint) {
+			throw new Error("You have to provide a callback or an endpoint.");
+		}
+		var modalTemplate = feedbackOptions.modalTemplate || defaultModalTemplate;
+		setupFeedbackModal(modalTemplate);
+
+		takeScreenshot(feedbackOptions.screenshotOptions, function(url) {
+			showFeedbackModal(url);
+
+			document.getElementById('feedback--submit-btn').addEventListener("click", function(e) {
+				handleFeedbackSubmit(feedbackOptions, url);
+			});
+		});
+	}
+
+	function handleFeedbackSubmit(feedbackOptions, screenshotUrl) {
+		var form = document.getElementById('feedback--form');
+		var formData = {
+			screenshot: screenshotUrl
+		};
+		var elems = form.querySelectorAll('input, textarea');
+		elems.forEach(function(element) { 
+			formData[element.name] = element.value;
+		});
+		Object.assign(formData, feedbackOptions.additionalData);
+
+		if (typeof feedbackOptions.callback === 'function') {
+			callback(formData);
+		} else {
+			/* send json post request to endpoint */
+			var http = new XMLHttpRequest();
+			http.open('POST', 'http://localhost:1234/', true);
+			http.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+			http.onreadystatechange = function () {
+				if (http.readyState == 4 && http.status == 200) {
+					// something
+					console.log('feedback submitted!');
+
+					/* cleanup */
+					document.body.removeChild(document.getElementById('feedback--modal'));
+				}
+			}
+			var text = JSON.stringify(formData);
+			http.send(text);
+		}
 	}
 
 	function appendHtml(element, html) {
@@ -14,74 +78,57 @@ var feedback = function() {
 		}
 	}
 
-	var modalTemplate = `
+	var defaultModalTemplate = `
 		<!-- Modal content -->
 		<div class="feedback--modal-content">
-			<form>
+			<form action="" id="feedback--form" class="feedback--form">
 				<span class="feedback--close" id="feedback--close">&times;</span>
 				<p>Tell us what we can help you with</p>
 				<p>
-					<label>
-						Email:
-						<input name="email" type="email" width="100%" placeholder="email@example.com">
-					</label>
+					<label for="feedback--email">Email address</label>:
+					<input id="feedback--email" class="feedback--input feedback--input-text" name="email" type="email" width="100%" placeholder="email@example.com">
 				</p>
 				<p>
-					<label>
-						Describe your problem:
-						<textarea width="100%" name="feedback-text"></textarea>
-					</label>
+					<label for="feedback--body">Describe your problem:</label>
+					<textarea id="feedback--body" class="feedback--input feedback--textarea" width="100%" name="feedback-text"></textarea>
 				</p>
 
 				<p>Screenshot:</p>
 				<img id="feedback--screenshot" class="feedback--screenshot">
 
-				<p><button type="submit" class="feedback--btn">Submit</button></p>
+				<p><button id="feedback--submit-btn" type="submit" class="feedback--btn">Submit</button></p>
 			</form>
 		</div>`;
 
-	function screenshot(options, callback) {
-
-		/* use html template for the modal if they provided one */
-		modalTemplate = options.template || modalTemplate;
-
-		/* create the video element, video cover, and modal elements and add them to body */
-		var modalElem = document.createElement('div');
-		modalElem.classList.add('feedback--modal');
-		modalElem.id = 'feedback--modal';
-		modalElem.style.display = "none";
-		appendHtml(modalElem, modalTemplate);
-		var videoElem = document.createElement('video');
-		videoElem.autoplay = true;
-		var videoCoverElem = document.createElement('div');
-		videoCoverElem.classList.add('feedback--video-cover');
-		videoElem.classList.add('feedback--video');
-		document.body.appendChild(modalElem);
-		document.body.appendChild(videoCoverElem);
-		document.body.appendChild(videoElem);
-
-		/* close modal when they click the 'X' */
-		document.getElementById('feedback--close').addEventListener("click", function(e) {
-			modalElem.style.display = "none";
-		});
-
-		/* When the user clicks anywhere outside of the modal, close it */
-		window.onclick = function(event) {
-			if (event.target == modalElem) {
-				modalElem.style.display = "none";
-			}
+	function takeScreenshot(screenshotOptions, callback) {
+		if (!screenshotOptions) {
+			screenshotOptions = {};
 		}
 
-		/* set the default width, height, and image type */
+		/* set the width, height, and image type */
 		var pageWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 		var pageHeight = window.innerHeight|| document.documentElement.clientHeight || document.body.clientHeight;
-		var height = options.height || pageHeight;
-		var width = options.width || pageWidth;
-		var type = options.type || 'image/png';
+		var height = screenshotOptions.height || pageHeight;
+		var width = screenshotOptions.width || pageWidth;
+		var type = screenshotOptions.type || 'image/png';
 
-		/* wait to take the screenshot until the video is actually playing */
+		/* create a div to cover the video element so we won't see it */
+		var videoCoverElem = document.createElement('div');
+		videoCoverElem.classList.add('feedback--video-cover');
+		document.body.appendChild(videoCoverElem);
+
+		/* create video element we're going to take a screenshot of */
+		var videoElem = document.createElement('video');
+		videoElem.classList.add('feedback--video');
+		videoElem.autoplay = true;
+		document.body.appendChild(videoElem);
+
+		/* wait until the video is actually playing until we take a screenshot of it */
 		videoElem.addEventListener('playing', function(e) {
+
+			/* see https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/readyState */
 			if (videoElem.readyState === 4) {
+
 				/* get the base64 url for our canvas image */
 				var url = makeScreenshotFromCanvas(videoElem, height, width);
 
@@ -90,10 +137,11 @@ var feedback = function() {
 				tracks.forEach(track => track.stop());
 				videoElem.srcObject = null;
 
+				/* clean up the dom (remove video and video cover elems) */
 				document.body.removeChild(videoElem);
 				document.body.removeChild(videoCoverElem);
 
-				/* call the callback */
+				/* pass the screenshot url to the callback */
 				callback(url);
 			}
 		});
@@ -106,7 +154,9 @@ var feedback = function() {
 				audio: false
 		};
 
-		/* start the screen capture */
+		/* start the screen capture
+		 * FIXME: do something if we get permission denied or some other error
+		 */
 		navigator.mediaDevices.getDisplayMedia(displayMediaOptions)
 			.then(function(stream) {
 				videoElem.srcObject = stream;
@@ -125,18 +175,54 @@ var feedback = function() {
 		return canvas.toDataURL(type);
 	}
 
-	/* our callback */
-	function feedbackPopup(url) {
+	function setupFeedbackModal(modalTemplate) {
+
+		/* create the modal from the template and append it to the body */
+		var modalElem = document.createElement('div');
+		modalElem.classList.add('feedback--modal');
+		modalElem.id = 'feedback--modal';
+		modalElem.style.display = "none";
+		appendHtml(modalElem, modalTemplate);
+		document.body.appendChild(modalElem);
+
+		/* prevent form submission via the normal method */
+		var form = document.getElementById('feedback--form');
+		form.addEventListener('submit', function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+		});
+
+		/* close modal when they click the 'X' */
+		document.getElementById('feedback--close').addEventListener("click", function(e) {
+			modalElem.style.display = "none";
+		});
+
+		/* also close the modal when they click anywhere outside of it */
+		window.onclick = function(event) {
+			if (event.target == modalElem) {
+				modalElem.style.display = "none";
+			}
+		}
+	}
+
+	function showFeedbackModal(screenshotUrl) {
+
+		/* add screenshot to modal */
 		var img = document.getElementById("feedback--screenshot");
-		img.src = url;
-		img.alt = url;
-		var modal = document.getElementById("feedback--modal");
-		modal.style.display = "block";
+		img.src = screenshotUrl;
+		img.alt = screenshotUrl;
+
+		/* display the modal */
+		var modalElem = document.getElementById("feedback--modal");
+		modalElem.style.display = "block";
 	}
 
 	return {
-		screenshot: screenshot,
-		defaultCallback: feedbackPopup
+		takeScreenshot: takeScreenshot,
+		showFeedbackModal: showFeedbackModal,
+		FeedbackOptions: FeedbackOptions,
+		ScreenshotOptions: ScreenshotOptions,
+		doFeedback: doFeedback
 	}
 }();
 
