@@ -58,9 +58,7 @@ var feedback = function() {
 			http.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
 			http.onreadystatechange = function () {
 				if (http.readyState == 4 && http.status == 200) {
-					// something
-					console.log('feedback submitted!');
-
+					/* all done ! */
 					/* cleanup */
 					document.body.removeChild(document.getElementById('feedback--modal'));
 				}
@@ -89,8 +87,8 @@ var feedback = function() {
 					<input id="feedback--email" class="feedback--input feedback--input-text" name="email" type="email" width="100%" placeholder="email@example.com">
 				</p>
 				<p>
-					<label for="feedback--body">Describe your problem:</label>
-					<textarea id="feedback--body" class="feedback--input feedback--textarea" width="100%" name="feedback-text"></textarea>
+					<label for="feedback--description">Describe your problem:</label>
+					<textarea id="feedback--description" class="feedback--input feedback--textarea" width="100%" name="description"></textarea>
 				</p>
 
 				<p>Screenshot:</p>
