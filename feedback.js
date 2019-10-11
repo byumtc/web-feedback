@@ -1,6 +1,7 @@
 'use strict';
 
 var feedback = function() {
+	/* not using this right now, was using it to retry the screenshot */
 	function sleep(ms) {
 		return new Promise(resolve => setTimeout(resolve, ms));
 	}
@@ -139,3 +140,6 @@ var feedback = function() {
 	}
 }();
 
+if (typeof module !== typeof undefined) {
+	module.exports = feedback;
+}
