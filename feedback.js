@@ -54,7 +54,7 @@ var feedback = function() {
 		} else {
 			/* send json post request to endpoint */
 			var http = new XMLHttpRequest();
-			http.open('POST', 'http://localhost:1234/', true);
+			http.open('POST', feedbackOptions.endpoint, true);
 			http.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
 			http.onreadystatechange = function () {
 				if (http.readyState == 4 && http.status == 200) {
