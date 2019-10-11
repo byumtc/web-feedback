@@ -78,7 +78,6 @@ var feedback = function() {
 	}
 
 	var defaultModalTemplate = `
-		<!-- Modal content -->
 		<div class="feedback--modal-content">
 			<form action="" id="feedback--form" class="feedback--form">
 				<span class="feedback--close" id="feedback--close">&times;</span>
