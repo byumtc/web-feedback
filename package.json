@@ -8,13 +8,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kimbo/web-feedback.git"
+    "url": "git+https://github.com/byumtc/web-feedback.git"
   },
   "author": "Kimball Leavitt",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/kimbo/web-feedback/issues"
+    "url": "https://github.com/byumtc/web-feedback/issues"
   },
-  "homepage": "https://github.com/kimbo/web-feedback#readme",
+  "homepage": "https://github.com/byumtc/web-feedback#readme",
   "dependencies": {}
 }
