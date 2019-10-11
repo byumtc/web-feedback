@@ -2,12 +2,13 @@
 
 var feedback = function() {
 	class FeedbackOptions {
-		constructor(options, callback) {
+		constructor(options) {
+			options = options || {};
 			this.endpoint = options.endpoint;
 			this.modalTemplate = options.modalTemplate;
 			this.screenshotOptions = options.screenshotOptions;
 			this.additionalInfo = options.additionalInfo || {};
-			this.callback = callback || options.callback;
+			this.callback = options.callback;
 		}
 	}
 
