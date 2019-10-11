@@ -1,7 +1,7 @@
 {
   "name": "web-feedback",
   "version": "1.0.0",
-  "description": "",
+  "description": "Get feedback from users",
   "main": "feedback.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
