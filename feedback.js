@@ -28,13 +28,15 @@ var feedback = function() {
       throw new Error("You have to provide a callback or an endpoint.");
     }
     var modalTemplate = feedbackOptions.modalTemplate || defaultModalTemplate;
-    setupFeedbackModal(modalTemplate);
+    showInstructions(function(action) {
+      setupFeedbackModal(modalTemplate);
 
-    takeScreenshot(feedbackOptions.screenshotOptions, function(url) {
-      showFeedbackModal(url);
+      takeScreenshot(feedbackOptions.screenshotOptions, function(url) {
+        showFeedbackModal(url);
 
-      document.getElementById('feedback--submit-btn').addEventListener("click", function(e) {
-        handleFeedbackSubmit(feedbackOptions, url);
+        document.getElementById('feedback--submit-btn').addEventListener("click", function(e) {
+          handleFeedbackSubmit(feedbackOptions, url);
+        });
       });
     });
   }
@@ -77,10 +79,65 @@ var feedback = function() {
     }
   }
 
+  function buildInstructionsModal(modalTemplate) {
+    var modalElem = document.getElementById('feedback--instructions-modal');
+    /* create the modal from the template and append it to the body */
+    if (!modalElem) {
+      modalElem = document.createElement('div');
+      modalElem.classList.add('feedback--modal');
+      modalElem.id = 'feedback--instructions-modal';
+      modalElem.style.display = "none";
+      appendHtml(modalElem, modalTemplate);
+      document.body.appendChild(modalElem);
+    }
+    return modalElem;
+  }
+
+  function showInstructions(callback) {
+    var modalElem = buildInstructionsModal(instructionsModalTemplate);
+    modalElem.style.display = "block";
+
+    /* close modal when they click the 'X' */
+    document.getElementById('feedback--instructions-close').addEventListener("click", function(e) {
+      document.body.removeChild(modalElem);
+      modalElem.style.display = "none";
+      callback('exited');
+    });
+
+    /* also close the modal when they click anywhere outside of it */
+    window.onclick = function(event) {
+      if (event.target == modalElem) {
+        document.body.removeChild(modalElem);
+        modalElem.style.display = "none";
+        callback('exited');
+      }
+    }
+
+    document.getElementById('feedback--btn-acknowledge').addEventListener("click", function(e) {
+      document.body.removeChild(modalElem);
+      modalElem.style.display = "none";
+      callback('acknowledged');
+    });
+  }
+
+  var instructionsModalTemplate = `
+    <div class="feedback--modal-content">
+      <span class="feedback--close" id="feedback--instructions-close">&times;</span>
+      <p>Your browser is going to ask you which screen to share. There will be three options:</p>
+        <ul>
+          <li>Your Entire Screen</li>
+          <li>Application Window</li>
+          <li>Chrome Tab</li>
+        </ul>
+      <p>Choose "Chrome Tab", and then select the current tab you're in (usually the top one).</p>
+      <p>Then, click "Share"</p>
+      <button type="button" class="feedback--btn" id="feedback--btn-acknowledge">Got it</button>
+    </div>`;
+
   var defaultModalTemplate = `
     <div class="feedback--modal-content">
+      <span class="feedback--close" id="feedback--close">&times;</span>
       <form action="" id="feedback--form" class="feedback--form">
-        <span class="feedback--close" id="feedback--close">&times;</span>
         <p>Tell us what we can help you with</p>
         <p>
           <label for="feedback--email">Email address</label>:
@@ -159,7 +216,11 @@ var feedback = function() {
       .then(function(stream) {
         videoElem.srcObject = stream;
       }).catch(function(err) {
-        console.log(err);
+        /* clean up the dom (remove video and video cover elems) */
+        document.body.removeChild(videoElem);
+        document.body.removeChild(videoCoverElem);
+        /* pass the screenshot url (in this case, null) to the callback */
+        callback(null);
       });
   }
 
@@ -204,14 +265,14 @@ var feedback = function() {
   }
 
   function showFeedbackModal(screenshotUrl) {
+    var modalElem = document.getElementById("feedback--modal");
+    var img = document.getElementById("feedback--screenshot");
 
     /* add screenshot to modal */
-    var img = document.getElementById("feedback--screenshot");
     img.src = screenshotUrl;
     img.alt = screenshotUrl;
 
     /* display the modal */
-    var modalElem = document.getElementById("feedback--modal");
     modalElem.style.display = "block";
   }
 
