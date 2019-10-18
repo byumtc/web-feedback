@@ -43,6 +43,7 @@ var feedback = function() {
 
   function handleFeedbackSubmit(feedbackOptions, screenshotUrl) {
     var form = document.getElementById('feedback--form');
+    var feebackModal = document.getElementById('feedback--modal');
     var formData = {
       screenshot: screenshotUrl
     };
@@ -59,15 +60,17 @@ var feedback = function() {
       var http = new XMLHttpRequest();
       http.open('POST', feedbackOptions.endpoint, true);
       http.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-      http.onreadystatechange = function () {
+      http.onreadystatechange = function() {
         if (http.readyState == 4 && http.status == 200) {
-          /* all done ! */
-          /* cleanup */
-          document.body.removeChild(document.getElementById('feedback--modal'));
+          /* success */
+          document.body.removeChild(feebackModal);
+        } else {
+          /* failure */
+          document.body.removeChild(feebackModal);
         }
       }
-      var text = JSON.stringify(formData);
-      http.send(text);
+      var json = JSON.stringify(formData);
+      http.send(json);
     }
   }
 
@@ -148,7 +151,7 @@ var feedback = function() {
           <textarea id="feedback--description" class="feedback--input feedback--textarea" width="100%" name="description"></textarea>
         </p>
 
-        <p>Screenshot:</p>
+        <p id="feedback--screenshot-text">Screenshot:</p>
         <img id="feedback--screenshot" class="feedback--screenshot">
 
         <p><button id="feedback--submit-btn" type="submit" class="feedback--btn">Submit</button></p>
@@ -267,10 +270,18 @@ var feedback = function() {
   function showFeedbackModal(screenshotUrl) {
     var modalElem = document.getElementById("feedback--modal");
     var img = document.getElementById("feedback--screenshot");
+    var screenshotText = document.getElementById("feedback--screenshot-text");
 
-    /* add screenshot to modal */
-    img.src = screenshotUrl;
-    img.alt = screenshotUrl;
+    if (screenshotUrl === null) {
+      img.style.display = "none";
+      screenshotText.style.display = "none";
+    } else {
+      img.style.display = "block";
+      screenshotText.style.display = "block";
+      /* add screenshot to modal */
+      img.src = screenshotUrl;
+      img.alt = screenshotUrl;
+    }
 
     /* display the modal */
     modalElem.style.display = "block";
