@@ -63,10 +63,10 @@ var feedback = function() {
       http.onreadystatechange = function() {
         if (http.readyState == 4 && http.status == 200) {
           /* success */
-          document.body.removeChild(feebackModal);
+          feebackModal.remove();
         } else {
           /* failure */
-          document.body.removeChild(feebackModal);
+          feebackModal.remove();
         }
       }
       var json = JSON.stringify(formData);
