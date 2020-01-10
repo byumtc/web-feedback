@@ -126,3 +126,7 @@ Default height and width are the height and width of the window.
 # Examples
 
 see [examples](./examples)
+
+# License
+
+See [LICENSE](https://github.com/byumtc/web-feedback/blob/master/LICENSE)
