@@ -35,6 +35,9 @@ var feedback = function() {
         showFeedbackModal(url);
 
         document.getElementById('feedback--submit-btn').addEventListener("click", function(e) {
+          /* prevent multiple submissions */
+          document.getElementById('feedback--submit-btn').disabled = true;
+
           handleFeedbackSubmit(feedbackOptions, url);
         });
       });
