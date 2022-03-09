@@ -146,7 +146,7 @@ var feedback = function() {
       <form action="" id="feedback--form" class="feedback--form">
         <p>Tell us what we can help you with</p>
         <p>
-          <label for="feedback--email">Email address</label>:
+          <label for="feedback--email">Your email address</label>:
           <input id="feedback--email" class="feedback--input feedback--input-text" name="email" type="email" width="100%" placeholder="email@example.com">
         </p>
         <p>
