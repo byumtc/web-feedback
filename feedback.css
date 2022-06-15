@@ -18,6 +18,10 @@
   cursor: pointer;
 }
 
+#feedback--description {
+  resize: none;
+}
+
 .feedback--input-text {
   min-height: 30px;
 }

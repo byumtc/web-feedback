@@ -151,7 +151,7 @@ var feedback = function() {
         </p>
         <p>
           <label for="feedback--description">Describe the issue:</label>
-          <textarea id="feedback--description" class="feedback--input feedback--textarea" width="100%" name="description" style="resize: none;"></textarea>
+          <textarea id="feedback--description" class="feedback--input feedback--textarea" width="100%" name="description"></textarea>
         </p>
 
         <p id="feedback--screenshot-text">Screenshot:</p>
