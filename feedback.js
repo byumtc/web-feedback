@@ -144,14 +144,14 @@ var feedback = function() {
     <div class="feedback--modal-content">
       <span class="feedback--close" id="feedback--close">&times;</span>
       <form action="" id="feedback--form" class="feedback--form">
-        <p>Tell us what we can help you with</p>
+        <p>Give Feedback</p>
         <p>
-          <label for="feedback--email">Your email address</label>:
+          <label for="feedback--email">Your email address (required):</label>
           <input id="feedback--email" class="feedback--input feedback--input-text" name="email" type="email" width="100%" placeholder="email@example.com">
         </p>
         <p>
-          <label for="feedback--description">Describe your problem:</label>
-          <textarea id="feedback--description" class="feedback--input feedback--textarea" width="100%" name="description"></textarea>
+          <label for="feedback--description">Describe the issue:</label>
+          <textarea id="feedback--description" class="feedback--input feedback--textarea" width="100%" name="description" style="resize: none;"></textarea>
         </p>
 
         <p id="feedback--screenshot-text">Screenshot:</p>
